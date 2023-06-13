@@ -10,8 +10,12 @@ export * from './utils/typescript/ast-utils';
 export * from './utils/package-json';
 export * from './utils/assets';
 export * from './utils/package-json/update-package-json';
+export * from './utils/add-local-registry-scripts';
+export * from './utils/start-local-registry';
+export * from './utils/stop-local-registry';
 export { libraryGenerator } from './generators/library/library';
 export { initGenerator } from './generators/init/init';
+export { setupVerdaccio } from './generators/setup-verdaccio/generator';
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 export {

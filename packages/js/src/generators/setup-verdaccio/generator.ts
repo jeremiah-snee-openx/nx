@@ -13,6 +13,7 @@ import {
 import * as path from 'path';
 import { SetupVerdaccioGeneratorSchema } from './schema';
 import { verdaccioVersion } from '../../utils/versions';
+import { addLocalRegistryScripts } from '../../utils/add-local-registry-scripts';
 
 export async function setupVerdaccio(
   tree: Tree,
@@ -49,6 +50,8 @@ export async function setupVerdaccio(
       return json;
     });
   }
+
+  addLocalRegistryScripts(tree);
 
   if (!options.skipFormat) {
     await formatFiles(tree);

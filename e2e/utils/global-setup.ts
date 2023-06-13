@@ -19,10 +19,10 @@ export default async function (globalConfig: Config.ConfigGlobals) {
         `local-registry @nx/nx-source --config scripts/local-registry/config.yml --location none --storage ${storageLocation} --clear ${
           process.env.NX_E2E_SKIP_BUILD_CLEANUP !== 'true'
         }`.split(' '),
-        { stdio: 'pipe' }
+        { stdio: ['inherit', 'pipe', 'inherit', 'ipc'] }
       );
 
-      childProcess?.stdout?.on('data', (data) => {
+      const listener = (data) => {
         if (data.toString().includes('http://localhost:')) {
           const port = parseInt(
             data.toString().match(/localhost:(?<port>\d+)/)?.groups?.port
@@ -35,12 +35,10 @@ export default async function (globalConfig: Config.ConfigGlobals) {
           console.log('Set npm and yarn config registry to ' + registry);
 
           resolve(childProcess);
+          childProcess.stdout?.off('data', listener);
         }
-      });
-      childProcess?.stderr?.on('data', (data) => {
-        process.stderr.write(data);
-        reject(data);
-      });
+      };
+      childProcess?.stdout?.on('data', listener);
       childProcess.on('error', (err) => {
         console.log('local registry error', err);
         reject(err);
